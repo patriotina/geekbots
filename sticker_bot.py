@@ -31,4 +31,12 @@ def save_Sticker(message):
         stickzip.close()
         bot.send_sticker(message.chat.id, message.sticker.file_id)
 
+@bot.message_handler(commands=['tozip'])
+def to_zip(message):
+    with open('stickers.zip', 'rb') as file:
+        bot.send_document(message.chat.id, file)
+    
+    @bot.send_message(message.chat.id, 'zipppppme')
+
+
 bot.polling()
