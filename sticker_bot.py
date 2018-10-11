@@ -4,24 +4,13 @@ import random
 import requests
 import os
 from PIL import Image
+import zipfile
+
 
 bot = telebot.TeleBot(constants.token)
 
 approve = ['Угу', 'Да', 'Подтверждаю', 'Согласен']
 question = ['подтверди', 'согласен']
-
-#@bot.message_handler(func=lambda message: True)
-@bot.message_handler(content_types=["text"])
-def sendHi(message):
-    ok = False
-    for q in question:
-        if q in message.text.lower():
-            ok = True
-            break
-    if ok:
-        bot.send_message(message.chat.id, random.choice(approve))
-    else:
-        bot.send_message(message.chat.id, "не согласен!")
 
 @bot.message_handler(content_types=['sticker'])
 def save_Sticker(message):
@@ -37,7 +26,9 @@ def save_Sticker(message):
         nf.write(downfile)
         im = Image.open(filename).convert("RGB")
         im.save(filename+".jpg", "jpeg")
+        stickzip = zipfile.ZipFile(r'stickers.zip', 'a')
+        stickzip.write(filename+".jpg")
+        stickzip.close()
         bot.send_sticker(message.chat.id, message.sticker.file_id)
-
 
 bot.polling()
